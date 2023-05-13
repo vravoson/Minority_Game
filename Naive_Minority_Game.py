@@ -4,10 +4,12 @@ import random as rd
 import tqdm
 from utils import bin2dec, strategy
 
-def bin2dec(num):
-        return int(''.join(str(x) for x in num),2)
-
 class Naive_Minority_Game():
+
+    """
+    Naive minority game with non-strategic players and stationary strategies (no update)
+    Rule: Reward = +1 if minority choice, 1 if majority choice
+    """
 
     def __init__(self, memory_size, n_players, n_simulations = 1000, verbose = True):
         self.memory_size = memory_size
@@ -35,10 +37,9 @@ class Naive_Minority_Game():
     def _random_start(self, players_strats):
         first_outputs, player_profit = [], []
         for _ in range(self.memory_size):
-            strats_output = [rd.sample(list(player_strat),1) for player_strat in players_strats]  #uniform sample
+            strats_output = [rd.sample(list(player_strat),1) for player_strat in players_strats] 
             game_output = self._game_step_output(strats_output)
-        #    profit = np.where(strats_output == game_output, 1, -1)
-            profit = [1 if x == game_output else -1 for x in strats_output]
+            profit = [-1 if x == game_output else 1 for x in strats_output]
             player_profit.append(profit)
             first_outputs.append(game_output)
         return first_outputs, player_profit
@@ -47,6 +48,5 @@ class Naive_Minority_Game():
         strat_id = bin2dec(past_Mbits)
         strats_output = [player_strat[strat_id] for player_strat in players_strats]
         game_output = self._game_step_output(strats_output)
-    #    player_profit = np.where(strats_output == game_output, 1, -1)
-        player_profit = [1 if x == game_output else -1 for x in strats_output]
+        player_profit = [-1 if x == game_output else 1 for x in strats_output]
         return game_output, player_profit
